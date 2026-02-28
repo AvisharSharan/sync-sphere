@@ -1,0 +1,10 @@
+{
+  "name": "sync-sphere-server",
+  "version": "1.0.0",
+  "description": "SyncSphere backend server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  }
+}
