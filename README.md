@@ -1,70 +1,171 @@
-# Getting Started with Create React App
+# 💬 SyncSphere
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A real-time one-on-one chat messaging web application built with the MERN stack and Socket.io.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Tech Stack
 
-### `npm start`
+| Layer | Technology |
+|---|---|
+| Frontend | React.js, React Router v7, Zustand, Axios, Socket.io-client |
+| Backend | Node.js, Express.js |
+| Database | MongoDB, Mongoose |
+| Real-time | Socket.io |
+| Auth | JWT, bcryptjs |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+- **User Authentication** — Register and log in with email and password. Passwords are hashed with bcrypt. Sessions are managed via JWT stored in localStorage.
+- **User Search** — Search for any registered user by name or email to start a new conversation.
+- **One-on-One Messaging** — Send and receive messages in real time. Chat history is persisted in MongoDB and restored on page refresh.
+- **Conversation Sidebar** — Lists all conversations with the other participant's name, last message preview, and timestamp.
+- **Real-Time Delivery** — Messages appear instantly in the recipient's window via Socket.io without any page refresh.
+- **Typing Indicator** — A `• • • Name is typing` indicator appears when the other user is typing, both in the chat window and in the sidebar.
+- **Unread Badges** — Conversations with unread messages show a count badge on the sidebar.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+sync-sphere/
+├── client/                  # React frontend
+│   ├── public/
+│   └── src/
+│       ├── api/
+│       │   └── axiosInstance.js      # Axios with auto JWT header
+│       ├── components/
+│       │   ├── ChatWindow.jsx        # Main message view and input
+│       │   ├── MessageBubble.jsx     # Sent/received bubble component
+│       │   ├── Sidebar.jsx           # Conversation list and nav
+│       │   └── UserSearch.jsx        # Search modal for starting chats
+│       ├── pages/
+│       │   ├── AuthPage.jsx          # Combined login/register with tab toggle
+│       │   └── ChatPage.jsx          # Main chat layout with socket setup
+│       ├── socket/
+│       │   └── socket.js             # Socket.io singleton
+│       └── store/
+│           ├── useAuthStore.js       # Zustand auth state
+│           └── useChatStore.js       # Zustand conversations/messages state
+├── server/                  # Express backend
+│   ├── config/
+│   │   └── db.js                     # Mongoose connection
+│   ├── middleware/
+│   │   └── authMiddleware.js         # JWT protect middleware
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Conversation.js
+│   │   └── Message.js
+│   ├── routes/
+│   │   ├── authRoutes.js             # POST /api/auth/register|login
+│   │   ├── userRoutes.js             # GET  /api/users/search
+│   │   ├── conversationRoutes.js     # GET|POST /api/conversations
+│   │   └── messageRoutes.js          # GET|POST /api/messages
+│   └── index.js                      # Express app + Socket.io server
+├── .env
+└── package.json
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting Started
 
-### `npm run eject`
+### Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Node.js v18+
+- A MongoDB cluster (MongoDB Atlas or local)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1. Clone & install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+git clone https://github.com/your-username/sync-sphere.git
+cd sync-sphere
+npm install
+cd client && npm install
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 2. Configure environment variables
 
-## Learn More
+Create a `.env` file in the root of the project:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+PORT=5000
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+> **Note:** If your MongoDB password contains special characters (e.g. `!`, `@`, `#`), percent-encode them in the URI. For example `!` → `%21`.
 
-### Code Splitting
+### 3. Run the app
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Open two terminals from the project root:
 
-### Analyzing the Bundle Size
+**Terminal 1 — API server (port 5000):**
+```bash
+npm run server
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Terminal 2 — React dev server (port 3000):**
+```bash
+npm start
+```
 
-### Making a Progressive Web App
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## API Reference
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Auth
 
-### Deployment
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Login and receive a JWT |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Users
 
-### `npm run build` fails to minify
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/users/search?query=` | Search users by name or email |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Conversations
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/conversations` | Get all conversations for the logged-in user |
+| POST | `/api/conversations` | Start or open a one-on-one conversation |
+
+### Messages
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/messages/:conversationId` | Get all messages for a conversation |
+| POST | `/api/messages` | Send a new message |
+
+---
+
+## Socket.io Events
+
+| Event | Direction | Payload | Description |
+|---|---|---|---|
+| `setup` | Client → Server | `userId` | Registers user to their personal room |
+| `join conversation` | Client → Server | `conversationId` | Joins a conversation room |
+| `leave conversation` | Client → Server | `conversationId` | Leaves a conversation room |
+| `new message` | Client → Server | message object | Broadcasts a message to the room |
+| `message received` | Server → Client | message object | Delivers a new message to recipients |
+| `typing` | Client → Server | `{ conversationId, senderName }` | Notifies others that user is typing |
+| `stop typing` | Client → Server | `{ conversationId }` | Clears the typing indicator |
+
+---
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `MONGO_URI` | MongoDB connection string |
+| `JWT_SECRET` | Secret key used to sign JWT tokens |
+| `PORT` | Port the Express server listens on (default: `5000`) |
